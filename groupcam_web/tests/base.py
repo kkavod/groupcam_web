@@ -1,4 +1,4 @@
-from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin
 
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
