@@ -8,6 +8,7 @@ syntax: glob
 *.swo
 *.swn
 *~
+*.sqlite3
 .ropeproject/
 __pycache__
 groupcam_web/local_settings.py
