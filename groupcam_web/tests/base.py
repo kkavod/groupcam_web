@@ -2,9 +2,12 @@ from urllib.parse import urlparse, urljoin
 
 import pytest
 from django.test import LiveServerTestCase
+from django.contrib.auth import login
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+
+from groupcam_web.tests.factories import DEFAULT_PASSWORD
 
 
 class BaseLiveServerTestCase(LiveServerTestCase):

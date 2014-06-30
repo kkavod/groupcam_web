@@ -50,6 +50,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+from django.conf import global_settings
+TEMPLATE_CONTEXT_PROCESSORS = (
+    global_settings.TEMPLATE_CONTEXT_PROCESSORS +
+    ('django.core.context_processors.request',)
+)
+
 ROOT_URLCONF = 'groupcam_web.urls'
 
 WSGI_APPLICATION = 'groupcam_web.wsgi.application'
@@ -94,3 +100,6 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'groupcam_web.Camera'
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = '/'
+
+# Test mode flag
+TESTING = False

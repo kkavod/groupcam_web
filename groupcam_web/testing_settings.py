@@ -1,5 +1,6 @@
 from groupcam_web.settings import *  # NOQA
 
+TESTING = True
 
 DATABASES = {
     'default': {

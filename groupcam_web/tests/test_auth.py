@@ -1,8 +1,9 @@
 from selenium.webdriver.common.by import By
 from django.core.urlresolvers import reverse
 
-from groupcam_web.tests.base import BaseLiveServerTestCase
 from groupcam_web.tests.factories import DEFAULT_PASSWORD
+from groupcam_web.tests.base import (BaseLiveServerTestCase,
+                                     BaseAuthenticatedTestCase)
 
 
 CAMERA_ID_LOCATOR = (By.NAME, 'username')
@@ -11,8 +12,11 @@ SUBMIT_LOCATOR = (By.CSS_SELECTOR, 'button[type=submit]')
 FIELD_ERROR_LOCATOR = (By.CSS_SELECTOR, '.has-error')
 NON_FIELD_ERROR_LOCATOR = (By.CSS_SELECTOR, '.alert-danger')
 
+CAMERA_CTRL_LOCATOR = (By.ID, 'js-camera-control')
+LOGOUT_CTRL_LOCATOR = (By.ID, 'js-logout-control')
 
-class TestAuth(BaseLiveServerTestCase):
+
+class TestLogin(BaseLiveServerTestCase):
     def setup_method(self, method):
         self._login_url = reverse('login')
 
@@ -50,9 +54,6 @@ class TestAuth(BaseLiveServerTestCase):
         self._try_login('', '')
         self._wait_for_login_error()
 
-    def test_logout(self):
-        pass
-
     def _try_login(self, login, password):
         self.go_to(self._login_url)
         camera_id_elem = self.driver.find_element(*CAMERA_ID_LOCATOR)
@@ -69,3 +70,30 @@ class TestAuth(BaseLiveServerTestCase):
         waiter = lambda driver: bool(self.driver.find_elements(*locator))
         self.wait_until(waiter, "No login errors reported")
         assert self.get_current_path() == self._login_url
+
+
+def create_session_store():
+    """ Creates a session storage object. """
+
+    from django.utils.importlib import import_module
+    from django.conf import settings
+    engine = import_module(settings.SESSION_ENGINE)
+    store = engine.SessionStore()
+    store.save()
+    return store
+
+
+class TestLogout(BaseAuthenticatedTestCase):
+    def test_logout(self):
+        from django.conf import settings
+        session_store = create_session_store()
+        session_items = session_store
+        session_items['uid'] = 1
+        session_items.save()
+        self.driver.add_cookie({'name': settings.SESSION_COOKIE_NAME, 'value': session_store.session_key})
+        self.go_to('/')
+        import pdb; pdb.set_trace()
+
+        for locator in (CAMERA_CTRL_LOCATOR, LOGOUT_CTRL_LOCATOR):
+            ctrl = self.driver.find_element(*locator)
+            ctrl.click()
