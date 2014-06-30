@@ -1,6 +1,6 @@
 import os
 
-from groupcam_web.tests.factories import CameraFactory
+import pytest
 
 
 def pytest_configure():
@@ -8,6 +8,7 @@ def pytest_configure():
                           "groupcam_web.testing_settings")
 
 
-def pytest_runtestloop(session):
-    default_camera = CameraFactory.create()
-    return default_camera
+@pytest.fixture(scope='module')
+def default_camera():
+    from groupcam_web.tests.factories import CameraFactory
+    return CameraFactory.create()

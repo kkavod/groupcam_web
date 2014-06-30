@@ -17,9 +17,9 @@ class TestAuth(BaseLiveServerTestCase):
     def test_login(self):
         self.go_to(self._login_url)
         camera_id = self.driver.find_element_by_name('id')
-        camera_id.send_keys()
+        camera_id.send_keys(self.default_camera.camera_id)
         password = self.driver.find_element_by_name('password')
-        password.send_keys()
+        password.send_keys(self.default_camera.password)
         submit = self.driver.find_by_css_selector('button[type=submit]')
         submit.click()
         waiter = lambda driver: self.get_current_path() == '/'

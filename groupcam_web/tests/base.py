@@ -1,5 +1,6 @@
 from urllib.parse import urlparse, urljoin
 
+import pytest
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions
@@ -15,6 +16,10 @@ class BaseLiveServerTestCase(LiveServerTestCase):
     @classmethod
     def teardown_class(cls):
         cls.driver.quit()
+
+    @pytest.fixture(autouse=True)
+    def set_default_camera(self, default_camera):
+        self.default_camera = default_camera
 
     def go_to(self, path):
         self.driver.get(self.get_url_from_path(path))
@@ -55,3 +60,7 @@ class BaseLiveServerTestCase(LiveServerTestCase):
 
     def scroll_to_element(self, element):
         self.scroll_to(element.location['x'], element.location['y'])
+
+
+class BaseAuthenticatedTestCase(BaseLiveServerTestCase):
+    pass
