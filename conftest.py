@@ -8,7 +8,7 @@ def pytest_configure():
                           "groupcam_web.testing_settings")
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def default_camera():
     from groupcam_web.tests.factories import CameraFactory
     return CameraFactory.create()

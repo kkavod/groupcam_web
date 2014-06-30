@@ -1,6 +1,15 @@
+from selenium.webdriver.common.by import By
 from django.core.urlresolvers import reverse
 
 from groupcam_web.tests.base import BaseLiveServerTestCase
+from groupcam_web.tests.factories import DEFAULT_PASSWORD
+
+
+CAMERA_ID_LOCATOR = (By.NAME, 'username')
+PASSWORD_LOCATOR = (By.NAME, 'password')
+SUBMIT_LOCATOR = (By.CSS_SELECTOR, 'button[type=submit]')
+FIELD_ERROR_LOCATOR = (By.CSS_SELECTOR, '.has-error')
+NON_FIELD_ERROR_LOCATOR = (By.CSS_SELECTOR, '.alert-danger')
 
 
 class TestAuth(BaseLiveServerTestCase):
@@ -15,18 +24,48 @@ class TestAuth(BaseLiveServerTestCase):
         self.wait_until(waiter, error_msg)
 
     def test_login(self):
-        self.go_to(self._login_url)
-        camera_id = self.driver.find_element_by_name('id')
-        camera_id.send_keys(self.default_camera.camera_id)
-        password = self.driver.find_element_by_name('password')
-        password.send_keys(self.default_camera.password)
-        submit = self.driver.find_by_css_selector('button[type=submit]')
-        submit.click()
+        self._try_login(self.default_camera.camera_id, DEFAULT_PASSWORD)
         waiter = lambda driver: self.get_current_path() == '/'
         self.wait_until(waiter, "Login failed")
 
     def test_invalid_login(self):
-        pass
+        self._try_login('fakeuser', DEFAULT_PASSWORD)
+        self._wait_for_login_error(non_field_error=True)
+
+        self._try_login('', DEFAULT_PASSWORD)
+        self._wait_for_login_error()
+
+        self._try_login(self.default_camera.camera_id, '')
+        self._wait_for_login_error()
+
+        self._try_login('fakeuser', 'fakepassword')
+        self._wait_for_login_error(non_field_error=True)
+
+        self._try_login('', 'fakepassword')
+        self._wait_for_login_error()
+
+        self._try_login('fakeuser', '')
+        self._wait_for_login_error()
+
+        self._try_login('', '')
+        self._wait_for_login_error()
 
     def test_logout(self):
         pass
+
+    def _try_login(self, login, password):
+        self.go_to(self._login_url)
+        camera_id_elem = self.driver.find_element(*CAMERA_ID_LOCATOR)
+        camera_id_elem.send_keys(login)
+        password_elem = self.driver.find_element(*PASSWORD_LOCATOR)
+        password_elem.send_keys(password)
+        submit_elem = self.driver.find_element(*SUBMIT_LOCATOR)
+        submit_elem.click()
+
+    def _wait_for_login_error(self, non_field_error=False):
+        locator = (NON_FIELD_ERROR_LOCATOR
+                   if non_field_error
+                   else FIELD_ERROR_LOCATOR)
+        waiter = lambda driver: bool(self.driver.find_elements(*locator))
+        self.wait_until(waiter, "No login errors reported")
+        assert self.get_current_path() == self._login_url
