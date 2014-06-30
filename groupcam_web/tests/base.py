@@ -8,30 +8,28 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 class BaseLiveServerTestCase(LiveServerTestCase):
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.driver = WebDriver()
         cls.driver.maximize_window()
-        super(BaseLiveServerTestCase, cls).setUpClass()
 
     @classmethod
-    def tearDownClass(cls):
+    def teardown_class(cls):
         cls.driver.quit()
-        super(BaseLiveServerTestCase, cls).tearDownClass()
 
-    def path_to_url(self, path):
-        return urljoin(self.live_server_url, path)
-
-    def get_url(self, path):
-        self.driver.get(self.path_to_url(path))
+    def go_to(self, path):
+        self.driver.get(self.get_url_from_path(path))
         self.wait_for_page_loaded()
+
+    def get_url_from_path(self, path):
+        return urljoin(self.live_server_url, path)
 
     def get_current_path(self):
         return urlparse(self.driver.current_url).path
 
-    def wait_until(self, waiter, timeout=5, message=''):
+    def wait_until(self, waiter, message="", timeout=5):
         return WebDriverWait(self.driver, timeout).until(waiter, message)
 
-    def wait_until_not(self, waiter, timeout=5, message=''):
+    def wait_until_not(self, waiter, message="", timeout=5):
         return WebDriverWait(self.driver, timeout).until_not(waiter, message)
 
     def wait_for_page_loaded(self):

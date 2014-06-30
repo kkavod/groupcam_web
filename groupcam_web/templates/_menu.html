@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="container">
     <div class="header">
         <ul class="nav nav-pills pull-right">
@@ -5,12 +7,12 @@
             <div class="btn-group">
                 {% if user.is_authenticated %}
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    {{ user.username }} <span class="caret"></span>
+                    {{ user.camera_id }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="">Action</a></li>
+                    <li><a href="">{% trans "Change title" %}</a></li>
                     <li class="divider"></li>
-                    <li><a href="">Sign out</a></li>
+                    <li><a href="">{% trans "Sign out" %}</a></li>
                 </ul>
                 {% endif %}
             </div>

@@ -90,14 +90,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Override existing settings with local stuff
-try:
-    from groupcam_web.local_settings import *
-except ImportError:
-    pass
-
-
-# Debug toolbar
-if DEBUG:
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
+# Auth backend
+AUTH_USER_MODEL = 'groupcam_web.Camera'
+LOGIN_URL = '/auth/login'
