@@ -12,7 +12,7 @@
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="">{% trans "Change title" %}</a></li>
                     <li class="divider"></li>
-                    <li><a id="js-logout-control" href="">{% trans "Logout" %}</a></li>
+                    <li><a id="js-logout-control" href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
                 </ul>
                 {% endif %}
             </div>

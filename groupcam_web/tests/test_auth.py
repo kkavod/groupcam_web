@@ -73,9 +73,15 @@ class TestLogin(BaseLiveServerTestCase):
 
 
 class TestLogout(BaseAuthenticatedTestCase):
+    def setup_method(self, method):
+        self._logout_url = reverse('logout')
+
     def test_logout(self):
         self.go_to('/')
 
         for locator in (CAMERA_CTRL_LOCATOR, LOGOUT_CTRL_LOCATOR):
             ctrl = self.driver.find_element(*locator)
             ctrl.click()
+
+        waiter = lambda driver: self.get_current_path() == self._logout_url
+        self.wait_until(waiter, "Logout failed")

@@ -96,6 +96,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 # Auth backend
 
 AUTH_USER_MODEL = 'groupcam_web.Camera'
@@ -104,7 +105,14 @@ LOGIN_URL = '/auth/login'
 
 LOGIN_REDIRECT_URL = '/'
 
+LOGOUT_URL = '/auth/logout'
+
+TEMPLATE_DIRS = (
+    'groupcam_web/templates',
+)
 
 # Testing
 
 AUTHENTICATE = False
+TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader')
