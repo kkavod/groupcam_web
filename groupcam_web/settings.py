@@ -24,6 +24,10 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
+TEMPLATE_DIRS = (
+    'groupcam_web/templates',
+)
+
 ALLOWED_HOSTS = []
 
 
@@ -107,12 +111,7 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_URL = '/auth/logout'
 
-TEMPLATE_DIRS = (
-    'groupcam_web/templates',
-)
+# Groupcam REST API
 
-# Testing
-
-AUTHENTICATE = False
-TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader')
+#  REST_API_URL = 'http://localhost:5000'
+REST_API_URL = 'http://api.socio2.net/'
