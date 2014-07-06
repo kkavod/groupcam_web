@@ -72,27 +72,9 @@ class TestLogin(BaseLiveServerTestCase):
         assert self.get_current_path() == self._login_url
 
 
-def create_session_store():
-    """ Creates a session storage object. """
-
-    from django.utils.importlib import import_module
-    from django.conf import settings
-    engine = import_module(settings.SESSION_ENGINE)
-    store = engine.SessionStore()
-    store.save()
-    return store
-
-
 class TestLogout(BaseAuthenticatedTestCase):
     def test_logout(self):
-        from django.conf import settings
-        session_store = create_session_store()
-        session_items = session_store
-        session_items['uid'] = 1
-        session_items.save()
-        self.driver.add_cookie({'name': settings.SESSION_COOKIE_NAME, 'value': session_store.session_key})
         self.go_to('/')
-        import pdb; pdb.set_trace()
 
         for locator in (CAMERA_CTRL_LOCATOR, LOGOUT_CTRL_LOCATOR):
             ctrl = self.driver.find_element(*locator)

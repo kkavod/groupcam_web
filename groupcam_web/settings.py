@@ -97,9 +97,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Auth backend
+
 AUTH_USER_MODEL = 'groupcam_web.Camera'
+
 LOGIN_URL = '/auth/login'
+
 LOGIN_REDIRECT_URL = '/'
 
-# Test mode flag
-TESTING = False
+
+# Testing
+
+AUTHENTICATE = False

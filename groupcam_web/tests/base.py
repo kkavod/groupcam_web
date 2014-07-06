@@ -1,12 +1,14 @@
 from urllib.parse import urlparse, urljoin
 
 import pytest
+
 from django.test import LiveServerTestCase
-from django.contrib.auth import login
+
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from groupcam_web.tests.middleware import TESTING_FLAGS
 from groupcam_web.tests.factories import DEFAULT_PASSWORD
 
 
@@ -66,4 +68,10 @@ class BaseLiveServerTestCase(LiveServerTestCase):
 
 
 class BaseAuthenticatedTestCase(BaseLiveServerTestCase):
-    pass
+    @pytest.fixture(autouse=True)
+    def set_default_camera(self, default_camera):
+        super().set_default_camera(default_camera)
+        TESTING_FLAGS['auth_camera'] = default_camera
+
+    def teardown_method(self, method):
+        TESTING_FLAGS['auth_camera'] = None
